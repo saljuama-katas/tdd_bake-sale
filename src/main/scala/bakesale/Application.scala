@@ -3,7 +3,13 @@ package bakesale
 import scala.io.StdIn.readLine
 
 object Application extends App {
-  val store = new Store()
+  val inventory = Inventory(Map(
+    "B" -> (0.65, 48),
+    "M" -> (1.00, 36),
+    "C" -> (1.35, 24),
+    "W" -> (1.50, 30)
+  ))
+  val store = new Store(inventory)
   while (true) {
     print("Items to Purchase > ")
     val items = readLine()
