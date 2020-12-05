@@ -1,12 +1,21 @@
 package bakesale
 
-case class Inventory(products: Map[String, (Double, Int)]) {
+case class Inventory(var products: Seq[Item]) {
 
   def checkAvailability(product: String, quantity: Int = 1): Option[Double] = products
-    .get(product)
-    .filter(priceAndStock => priceAndStock._2 >= quantity)
-    .map(_._1 * quantity)
+    .find(_.identifier == product)
+    .filter(_.stock >= quantity)
+    .map(_.price * quantity)
 
-  def sellProduct(product: String, quantity: Int = 1): Option[Double] = ???
+  def sellProduct(product: String, quantity: Int = 1): Option[Double] = {
+    val price = checkAvailability(product, quantity)
+    products = products.map(item => {
+      val updatedStock = if (item.identifier == product) item.stock - quantity else item.stock
+      item.copy(stock = updatedStock)
+    })
+    price
+  }
 
 }
+
+case class Item(identifier: String, price: Double, stock: Int)
